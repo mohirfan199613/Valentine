@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine 💖</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .card {
+    background: white;
+    width: 90%;
+    max-width: 350px;
+    padding: 25px 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  h2 {
+    margin-bottom: 20px;
+  }
+
+  .buttons {
+    position: relative;
+    height: 120px;
+  }
+
+  button {
+    width: 120px;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+  }
+
+  #yes {
+    background: #ff4d6d;
+    color: white;
+  }
+
+  #no {
+    background: #d3d3d3;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  #result {
+    display: none;
+  }
+
+  img {
+    width: 100%;
+    max-width: 220px;
+    border-radius: 15px;
+    margin-top: 15px;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2 id="question">Will you be my Valentine? 💘</h2>
+
+  <div class="buttons">
+    <button id="yes">Yes 💖</button>
+    <button id="no">No 🙈</button>
+  </div>
+
+  <div id="result">
+    <h2>Yayyy! 🥰</h2>
+    <p>You just made my day ❤️</p>
+    <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
+  </div>
+</div>
+
+<script>
+  const noBtn = document.getElementById("no");
+  const yesBtn = document.getElementById("yes");
+  const result = document.getElementById("result");
+  const question = document.getElementById("question");
+
+  function moveNoButton() {
+    const card = document.querySelector(".card");
+    const maxX = card.clientWidth - noBtn.offsetWidth;
+    const maxY = 80;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
+
+  // Works for mobile + desktop
+  noBtn.addEventListener("touchstart", moveNoButton);
+  noBtn.addEventListener("mouseover", moveNoButton);
+
+  yesBtn.addEventListener("click", () => {
+    question.style.display = "none";
+    document.querySelector(".buttons").style.display = "none";
+    result.style.display = "block";
+  });
+</script>
+
+</body>
+</html>

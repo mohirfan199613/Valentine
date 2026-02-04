@@ -33,41 +33,41 @@
   }
 
   #buttons {
-  position: relative;
-  height: 200px;
-}
+    position: relative;
+    height: 200px;
+  }
 
-#yes {
-  background: #ff4d6d;
-  color: white;
-  border: none;
-  padding: 14px 26px;
-  font-size: 16px;
-  border-radius: 25px;
-  cursor: pointer;
-  z-index: 2;
-}
+  #yes {
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    padding: 14px 26px;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    z-index: 2;
+  }
 
-#no {
-  background: #d3d3d3;
-  border: none;
-  padding: 14px 26px;
-  font-size: 16px;
-  border-radius: 25px;
-  cursor: pointer;
-  position: absolute;
-  top: 70px;   /* STARTS BELOW YES */
-  left: 50%;
-  transform: translateX(-50%);
-}
+  #no {
+    background: #d3d3d3;
+    border: none;
+    padding: 14px 26px;
+    font-size: 16px;
+    border-radius: 25px;
+    cursor: pointer;
+    position: absolute;
+    top: 70px;   /* starts below YES */
+    left: 50%;
+    transform: translateX(-50%);
+  }
 
-  .result {
+  #result {
     display: none;
   }
 
   img {
     width: 100%;
-    max-width: 220px;
+    max-width: 240px;
     margin-top: 15px;
     border-radius: 15px;
   }
@@ -77,19 +77,35 @@
 <body>
 
 <div class="card" id="card">
-  <h2 id="question">Bhawana will you be my Valentine? 💞</h2>
+  <h2 id="question">Will you be my Valentine? 💘</h2>
 
   <div id="buttons">
-  <button id="yes">Yes! ❤️</button>
-  <button id="no">No</button>
-</div>
-  
-  <div class="result" id="result">
-    <h2>Yayyy! 🥰</h2>
+    <button id="yes">Yes 💖</button>
+    <button id="no">No 🙈</button>
+  </div>
+
+  <div id="result">
+    <h2>Yayyy 🥰</h2>
     <p>You just made my day ❤️</p>
     <img src="https://media4.giphy.com/media/v1.Y2lkPTZjMDliOTUyaWoyMXBsbWc4cDNmaWw2YXgzdTdyaXZoNnA4NWRtZ3JwZXA3eWJ2OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/O3Rl56ay8WSo8Mur4V/giphy.gif">
   </div>
 </div>
+
+<!-- 🎉 Confetti library -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<!-- 🎵 Audio -->
+<audio id="softMusic" loop>
+  <source src="soft.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="romanticMusic" loop>
+  <source src="romantic.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="confettiSound">
+  <source src="confetti.mp3" type="audio/mpeg">
+</audio>
 
 <script>
   const noBtn = document.getElementById("no");
@@ -98,33 +114,67 @@
   const result = document.getElementById("result");
   const question = document.getElementById("question");
 
+  const softMusic = document.getElementById("softMusic");
+  const romanticMusic = document.getElementById("romanticMusic");
+  const confettiSound = document.getElementById("confettiSound");
+
+  let musicStarted = false;
+
+  // Start soft music on first interaction
+  function startSoftMusic() {
+    if (!musicStarted) {
+      softMusic.volume = 0.25;
+      softMusic.play().catch(() => {});
+      musicStarted = true;
+    }
+  }
+
+  document.body.addEventListener("touchstart", startSoftMusic);
+  document.body.addEventListener("click", startSoftMusic);
+
+  // Move NO button randomly but far from YES
   function moveNoButton() {
-    const areaRect = buttons.getBoundingClientRect();
+    const area = buttons.getBoundingClientRect();
     const yesRect = yesBtn.getBoundingClientRect();
 
     let x, y, distance;
 
     do {
-      x = Math.random() * (areaRect.width - noBtn.offsetWidth);
-      y = Math.random() * (areaRect.height - noBtn.offsetHeight);
+      x = Math.random() * (area.width - noBtn.offsetWidth);
+      y = Math.random() * (area.height - noBtn.offsetHeight);
 
-      const noCenterX = areaRect.left + x + noBtn.offsetWidth / 2;
-      const noCenterY = areaRect.top + y + noBtn.offsetHeight / 2;
-      const yesCenterX = (yesRect.left + yesRect.right) / 2;
-      const yesCenterY = (yesRect.top + yesRect.bottom) / 2;
+      const noX = area.left + x + noBtn.offsetWidth / 2;
+      const noY = area.top + y + noBtn.offsetHeight / 2;
+      const yesX = (yesRect.left + yesRect.right) / 2;
+      const yesY = (yesRect.top + yesRect.bottom) / 2;
 
-      distance = Math.hypot(noCenterX - yesCenterX, noCenterY - yesCenterY);
-    } while (distance < 140); // safe distance
+      distance = Math.hypot(noX - yesX, noY - yesY);
+    } while (distance < 140);
 
     noBtn.style.left = x + "px";
     noBtn.style.top = y + "px";
   }
 
-  // Mobile + desktop
   noBtn.addEventListener("mouseover", moveNoButton);
   noBtn.addEventListener("touchstart", moveNoButton);
 
+  // YES clicked
   yesBtn.addEventListener("click", () => {
+    softMusic.pause();
+    softMusic.currentTime = 0;
+
+    confettiSound.volume = 0.6;
+    confettiSound.play();
+
+    romanticMusic.volume = 0.3;
+    romanticMusic.play();
+
+    confetti({
+      particleCount: 180,
+      spread: 80,
+      origin: { y: 0.6 }
+    });
+
     question.style.display = "none";
     buttons.style.display = "none";
     result.style.display = "block";
